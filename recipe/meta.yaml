@@ -1,50 +1,53 @@
 {% set name = "opentelemetry-instrumentation-ollama" %}
-{% set version = "0.47.3" %}
+{% set version = "0.47.2" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/opentelemetry_instrumentation_ollama-{{ version }}.tar.gz
-  sha256: 4314ed3803a954573ef245940f590ccf7f67221b6436d7acc0b0a9bea23d9b82
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name.replace('-', '_')}}-{{ version }}.tar.gz
+  sha256: 9bd6db0f37dfe0afc36066e9e73d05251f8da8d00dab542597228f3dd2e2d638
 
 build:
-  noarch: python
-  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  skip: true  # [py<39]
 
 requirements:
   host:
-    - python {{ python_min }}
-    - poetry-core
     - pip
+    - python
+    - poetry-core
   run:
-    - python >={{ python_min }}
+    - python
     - opentelemetry-api >=1.28.0,<2.0.0
     - opentelemetry-instrumentation >=0.50b0
     - opentelemetry-semantic-conventions >=0.50b0
-    - opentelemetry-semantic-conventions-ai >=0.4.12,<0.5.0
+    - opentelemetry-semantic-conventions-ai >=0.4.13,<0.5.0
   run_constrained:
-    - ollama >=0.3.2,<0.4.0
+    - ollama >=0.4.7,<0.5.0
 
+# Unable to run tests and check imports, ollama is not in the main channel.
 test:
-  imports:
-    - opentelemetry.instrumentation.ollama
   commands:
     - pip check
   requires:
     - pip
-    - python {{ python_min }}
 
 about:
   home: https://www.traceloop.com/openllmetry
-  dev_url: https://github.com/traceloop/openllmetry
-  doc_url: https://www.traceloop.com/docs/openllmetry/introduction
   summary: OpenTelemetry Ollama instrumentation
   license: Apache-2.0
+  license_family: Apache
   license_file: LICENSE
+  description: This library allows tracing calls to any of Ollama's endpoints sent with the official Ollama Python Library.
+  dev_url: https://github.com/traceloop/openllmetry
+  doc_url: https://www.traceloop.com/docs/openllmetry/introduction
 
 extra:
   recipe-maintainers:
     - timkpaine
+  skip-lints:
+    - invalid_url
+    - missing_imports_or_run_test_py
