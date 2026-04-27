@@ -1,5 +1,5 @@
 {% set name = "opentelemetry-instrumentation-ollama" %}
-{% set version = "0.49.6" %}
+{% set version = "0.57.0" %}
 
 package:
   name: {{ name|lower }}
@@ -7,26 +7,24 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name.replace('-', '_')}}-{{ version }}.tar.gz
-  sha256: 407339e80b52379f7900bbcfc34bd8583c70b99e4e4d60b736db1abeecb74b6b
+  sha256: b4ce8a91045a39819ae682cda4ba213a6cd45fdeea3e70d01911e4a0d3e0d6e3
 
 build:
   number: 0
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  skip: true  # [py<39]
+  skip: true  # [py<310]
 
 requirements:
   host:
     - pip
     - python
-    - poetry-core
+    - hatchling
   run:
     - python
     - opentelemetry-api >=1.38.0,<2.0.0
     - opentelemetry-instrumentation >=0.59b0
     - opentelemetry-semantic-conventions >=0.59b0
-    - opentelemetry-semantic-conventions-ai >=0.4.13,<0.5.0
-  run_constrained:
-    - ollama >=0.4.7,<0.5.0
+    - opentelemetry-semantic-conventions-ai >=0.5.1,<0.6.0
 
 # Unable to run tests and check imports, ollama is not in the main channel.
 test:
@@ -49,5 +47,5 @@ extra:
   recipe-maintainers:
     - timkpaine
   skip-lints:
-    - invalid_url
+    - reachable_url
     - missing_imports_or_run_test_py
